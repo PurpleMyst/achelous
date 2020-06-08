@@ -56,11 +56,15 @@ export default class ObsController {
     const stopSpinner = makeSpinner(
       `Copying episode file "${basename(episodePath)}" to ${EPISODE_FILE}`
     );
+    // Lord forgive me for what I'm about to do ...
     try {
+      try {
       await fs.unlink(EPISODE_FILE);
     } catch (e) {}
     await fs.copyFile(episodePath, EPISODE_FILE);
+    } finally {
     stopSpinner();
+    }
     success("Copied episode file");
 
     // Lights on!
