@@ -44,6 +44,8 @@ export default class ObsController {
     info("Registering discussion scene changer");
     this.socket.on("MediaEnded" as any, async ({ sourceName }) => {
       if (sourceName !== SOURCE_NAME) return;
+      if ((await this.socket.send("GetCurrentScene")).name != SceneName.Episode)
+        return;
       info("Moving to discussion scene");
       await this.setScene(SceneName.Discussion);
     });
