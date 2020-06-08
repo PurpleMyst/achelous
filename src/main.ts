@@ -10,18 +10,23 @@ function sleep(time: number): Promise<void> {
   return new Promise((resolve) => setTimeout(() => resolve(), time));
 }
 
+async function randomEpisode() {
+  if (!process.env.SHERA_EPISODE_DIR) throw new Error("no ep dir");
+  const dir = await fs.readdir(process.env.SHERA_EPISODE_DIR);
+  const episode = path.join(
+    process.env.SHERA_EPISODE_DIR,
+    dir[Math.floor(Math.random() * dir.length)]
+  );
+  return episode;
+}
+
 async function main() {
   dotenv.config();
 
   const controller = new OBSController();
 
   try {
-    if (!process.env.SHERA_EPISODE_DIR) throw new Error("no ep dir");
-    const dir = await fs.readdir(process.env.SHERA_EPISODE_DIR);
-    const episode = path.join(
-      process.env.SHERA_EPISODE_DIR,
-      dir[Math.floor(Math.random() * dir.length)]
-    );
+    const episode = await randomEpisode();
 
     await controller.connect({
       address: process.env.SHERA_ADDRESS,
