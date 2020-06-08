@@ -27,7 +27,7 @@ async function main() {
   const bot = new Discord.Client();
   await bot.login(process.env.SHERA_DISCORD_TOKEN);
 
-  bot.on("message", async (message) => {
+  bot.on("message", async function messageHandler(message) {
     if (message.author.bot) return;
 
     switch (message.content) {
@@ -45,11 +45,6 @@ async function main() {
         const episode = await randomEpisode();
         message.channel.send(`Setting episode to ${path.basename(episode)}`);
         await controller.startEpisode(episode);
-        break;
-
-      case "s!quit":
-        message.channel.send("Bye!");
-        bot.destroy();
         break;
     }
   });
