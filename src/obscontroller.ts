@@ -11,6 +11,7 @@ const EPISODE = "Episode";
 const SOURCE_NAME = "EpisodeSource";
 
 const PLAY = false;
+const PAUSE = !PLAY;
 
 const EPISODE_FILE = "episode.mkv";
 
@@ -76,5 +77,14 @@ export default class ObsController {
     });
 
     success("Started episode!");
+  }
+
+  public async pauseEpisode() {
+    info("Pausing episode");
+    await this.socket.send("SetCurrentScene", { "scene-name": EPISODE });
+    await this.socket.send("PlayPauseMedia" as any, {
+      sourceName: SOURCE_NAME,
+      playPause: PAUSE,
+    });
   }
 }
