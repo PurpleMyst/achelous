@@ -7,6 +7,7 @@ import { info, makeSpinner, success } from "./output";
 
 const NOTHING = "Nothing";
 const EPISODE = "Episode";
+const DISCUSSION = "Discussion";
 
 const SOURCE_NAME = "EpisodeSource";
 
@@ -26,6 +27,20 @@ export default class ObsController {
     info("Connecting ...");
     await this.socket.connect(options);
     await this.verifyScenes();
+
+    info("Blanking out the screen");
+    await this.socket.send("SetCurrentScene", { "scene-name": NOTHING });
+
+    await this.registerDiscussionScene();
+  }
+
+  private async registerDiscussionScene() {
+    info("Registering discussion scene changer");
+    this.socket.on("MediaEnded" as any, async ({ sourceName }) => {
+      if (sourceName !== SOURCE_NAME) return;
+      info("Moving to discussion scene");
+      await this.socket.send("SetCurrentScene", { "scene-name": DISCUSSION });
+    });
   }
 
   public async disconnect() {
@@ -38,13 +53,15 @@ export default class ObsController {
     const { scenes } = await this.socket.send("GetSceneList");
     const sceneNames = scenes.map((scene) => scene.name);
     sceneNames.sort();
-    if (sceneNames[0] !== EPISODE || sceneNames[1] !== NOTHING) {
+    if (
+      sceneNames[0] !== DISCUSSION ||
+      sceneNames[1] !== EPISODE ||
+      sceneNames[2] !== NOTHING
+    ) {
       throw new Error(
-        `Invalid scene names, expected ${EPISODE} and ${NOTHING}`
+        `Invalid scene names, expected ${EPISODE}, ${DISCUSSION} and ${NOTHING}`
       );
     }
-    info("Blanking out the screen");
-    await this.socket.send("SetCurrentScene", { "scene-name": NOTHING });
   }
 
   public async startEpisode(episodePath: string) {
