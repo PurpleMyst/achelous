@@ -12,7 +12,7 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "cli-spinner": "^0.2.10",
-    "discordjs-stable": "^11.5.1",
+    "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "obs-websocket-js": "^4.0.1",
     "typescript": "^3.9.5"

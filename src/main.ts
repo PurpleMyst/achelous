@@ -3,12 +3,7 @@ import * as path from "path";
 
 import OBSController from "./obscontroller";
 import * as dotenv from "dotenv";
-
-import { error } from "./output";
-
-function sleep(time: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(() => resolve(), time));
-}
+import * as Discord from "discord.js";
 
 async function randomEpisode() {
   if (!process.env.SHERA_EPISODE_DIR) throw new Error("no ep dir");
@@ -24,26 +19,42 @@ async function main() {
   dotenv.config();
 
   const controller = new OBSController();
+  await controller.connect({
+    address: process.env.SHERA_ADDRESS,
+    password: process.env.SHERA_PASSWORD,
+  });
 
-  try {
-    const episode = await randomEpisode();
+  const bot = new Discord.Client();
+  await bot.login(process.env.SHERA_DISCORD_TOKEN);
 
-    await controller.connect({
-      address: process.env.SHERA_ADDRESS,
-      password: process.env.SHERA_PASSWORD,
-    });
+  bot.on("message", async (message) => {
+    if (message.author.bot) return;
 
-    await controller.startEpisode(episode);
+    switch (message.content) {
+      case "s!pause":
+        message.channel.send("Pausing episode");
+        await controller.pauseEpisode();
+        break;
 
-    await sleep(5000);
-    await controller.pauseEpisode();
-    await sleep(5000);
-    await controller.unpauseEpisode();
-  } catch (e) {
-    error(e);
-  } finally {
-    controller.disconnect();
-  }
+      case "s!unpause":
+        message.channel.send("Unpausing episode");
+        await controller.unpauseEpisode();
+        break;
+
+      case "s!randomep":
+        const episode = await randomEpisode();
+        message.channel.send(`Setting episode to ${path.basename(episode)}`);
+        await controller.startEpisode(episode);
+        break;
+
+      case "s!quit":
+        message.channel.send("Bye!");
+        bot.destroy();
+        break;
+    }
+  });
+
+  bot.once("disconnect", () => controller.disconnect());
 }
 
 main();
