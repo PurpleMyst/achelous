@@ -6,6 +6,10 @@ import * as dotenv from "dotenv";
 
 import { error } from "./output";
 
+function sleep(time: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(() => resolve(), time));
+}
+
 async function main() {
   dotenv.config();
 
@@ -25,6 +29,11 @@ async function main() {
     });
 
     await controller.startEpisode(episode);
+
+    await sleep(5000);
+    await controller.pauseEpisode();
+    await sleep(5000);
+    await controller.unpauseEpisode();
   } catch (e) {
     error(e);
   } finally {

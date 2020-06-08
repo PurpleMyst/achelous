@@ -69,12 +69,7 @@ export default class ObsController {
     success("Copied episode file");
 
     // Lights on!
-    info("Switching to episode scene and starting media");
-    await this.socket.send("SetCurrentScene", { "scene-name": EPISODE });
-    await this.socket.send("PlayPauseMedia" as any, {
-      sourceName: SOURCE_NAME,
-      playPause: PLAY,
-    });
+    await this.unpauseEpisode();
 
     success("Started episode!");
   }
@@ -85,6 +80,15 @@ export default class ObsController {
     await this.socket.send("PlayPauseMedia" as any, {
       sourceName: SOURCE_NAME,
       playPause: PAUSE,
+    });
+  }
+
+  public async unpauseEpisode() {
+    info("Unpausing episode");
+    await this.socket.send("SetCurrentScene", { "scene-name": EPISODE });
+    await this.socket.send("PlayPauseMedia" as any, {
+      sourceName: SOURCE_NAME,
+      playPause: PLAY,
     });
   }
 }
