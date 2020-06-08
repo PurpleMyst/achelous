@@ -60,11 +60,11 @@ export default class ObsController {
     // Lord forgive me for what I'm about to do ...
     try {
       try {
-      await fs.unlink(EPISODE_FILE);
-    } catch (e) {}
-    await fs.copyFile(episodePath, EPISODE_FILE);
+        await fs.unlink(EPISODE_FILE);
+      } catch (e) {}
+      await fs.copyFile(episodePath, EPISODE_FILE);
     } finally {
-    stopSpinner();
+      stopSpinner();
     }
     success("Copied episode file");
 
