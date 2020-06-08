@@ -6,7 +6,8 @@ import ObsWebSocket from "obs-websocket-js";
 import { info, makeSpinner, success } from "./output";
 
 enum SceneName {
-  Nothing = "Nothing",
+  Blank = "Blank",
+  Loading = "Loading",
   Episode = "Episode",
   Discussion = "Discussion",
 }
@@ -35,7 +36,7 @@ export default class ObsController {
     await this.verifyScenes();
 
     info("Blanking out the screen");
-    await this.setScene(SceneName.Nothing);
+    await this.setScene(SceneName.Blank);
 
     await this.registerDiscussionScene();
   }
@@ -68,8 +69,8 @@ export default class ObsController {
 
   public async startEpisode(episodePath: string) {
     // Blank out the screen so that we can switch the episode file outg
-    info("Clearing the screen");
-    await this.setScene(SceneName.Nothing);
+    info("Putting up a loading screen");
+    await this.setScene(SceneName.Loading);
 
     // Copy the file to the location, ignoring any errors that occur within unlink
     // Because the only error that could probably happen is the file doesn't exist
