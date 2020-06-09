@@ -7,19 +7,19 @@ import type OBSController from "./obscontroller";
 async function nextep(controller: OBSController, message: Message) {
   const ep = await controller.startNextEpisode();
   if (ep) {
-    message.channel.send(`Playing "${basename(ep, "mkv")}"`);
+    await message.channel.send(`Playing "${basename(ep, "mkv")}"`);
   } else {
-    message.channel.send("That was the last one!");
+    await message.channel.send("That was the last one!");
   }
 }
 
 async function pause(controller: OBSController, message: Message) {
-  message.channel.send("Pausing episode");
+  await message.channel.send("Pausing episode");
   await controller.pauseEpisode();
 }
 
 async function unpause(controller: OBSController, message: Message) {
-  message.channel.send("Unpausing episode");
+  await message.channel.send("Unpausing episode");
   await controller.unpauseEpisode();
 }
 
