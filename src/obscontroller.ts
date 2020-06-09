@@ -98,7 +98,7 @@ export default class ObsController {
   public async startNextEpisode() {
     if (!process.env.SHERA_EPISODE_DIR)
       throw new Error("Missing SHERA_EPISODE_DIR environment variable");
-    info("Playing next episode");)
+    info("Playing next episode");
 
     const eps = await fs.readdir(process.env.SHERA_EPISODE_DIR);
     if (eps.length === 0) throw new Error("SHERA_EPISODE_DIR is empty");

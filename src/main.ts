@@ -1,8 +1,11 @@
-import { basename } from "path";
-
-import OBSController from "./obscontroller";
 import * as dotenv from "dotenv";
 import * as Discord from "discord.js";
+
+import OBSController from "./obscontroller";
+import commands from "./commands";
+import { info } from "./output";
+
+const COMMAND_PREFIX = "$";
 
 async function main() {
   dotenv.config();
@@ -20,25 +23,11 @@ async function main() {
     if (message.author.bot) return;
 
     message.channel.startTyping();
-    switch (message.content) {
-      case "s!pause":
-        message.channel.send("Pausing episode");
-        await controller.pauseEpisode();
-        break;
-
-      case "s!unpause":
-        message.channel.send("Unpausing episode");
-        await controller.unpauseEpisode();
-        break;
-
-      case "s!nextep":
-        const ep = await controller.startNextEpisode();
-        if (ep) {
-          message.channel.send(`Playing "${basename(ep)}"`);
-        } else {
-          message.channel.send("That was the last one!");
-        }
-        break;
+    const command = message.content.split(" ")[0];
+    if (command?.startsWith(COMMAND_PREFIX)) {
+      const handler = commands[command.substr(COMMAND_PREFIX.length)];
+      info(`Got command ${command} (handler exists? ${!!handler})`);
+      if (handler) await handler(controller, message);
     }
     message.channel.stopTyping();
   });
