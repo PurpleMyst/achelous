@@ -1,19 +1,8 @@
-import { promises as fs } from "fs";
-import * as path from "path";
+import { basename } from "path";
 
 import OBSController from "./obscontroller";
 import * as dotenv from "dotenv";
 import * as Discord from "discord.js";
-
-async function randomEpisode() {
-  if (!process.env.SHERA_EPISODE_DIR) throw new Error("no ep dir");
-  const dir = await fs.readdir(process.env.SHERA_EPISODE_DIR);
-  const episode = path.join(
-    process.env.SHERA_EPISODE_DIR,
-    dir[Math.floor(Math.random() * dir.length)]
-  );
-  return episode;
-}
 
 async function main() {
   dotenv.config();
@@ -30,6 +19,7 @@ async function main() {
   bot.on("message", async function messageHandler(message) {
     if (message.author.bot) return;
 
+    message.channel.startTyping();
     switch (message.content) {
       case "s!pause":
         message.channel.send("Pausing episode");
@@ -41,12 +31,16 @@ async function main() {
         await controller.unpauseEpisode();
         break;
 
-      case "s!randomep":
-        const episode = await randomEpisode();
-        message.channel.send(`Setting episode to ${path.basename(episode)}`);
-        await controller.startEpisode(episode);
+      case "s!nextep":
+        const ep = await controller.startNextEpisode();
+        if (ep) {
+          message.channel.send(`Playing "${basename(ep)}"`);
+        } else {
+          message.channel.send("That was the last one!");
+        }
         break;
     }
+    message.channel.stopTyping();
   });
 
   bot.once("disconnect", () => controller.disconnect());

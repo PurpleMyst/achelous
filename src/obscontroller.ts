@@ -1,5 +1,5 @@
 import { promises as fs } from "fs";
-import { basename } from "path";
+import { basename, join as joinPath } from "path";
 
 import ObsWebSocket from "obs-websocket-js";
 
@@ -21,6 +21,7 @@ const EPISODE_FILE = "episode.mkv";
 
 export default class ObsController {
   private socket: ObsWebSocket;
+  private lastPlayedEpisode: string | null = null;
 
   public constructor() {
     this.socket = new ObsWebSocket();
@@ -92,6 +93,33 @@ export default class ObsController {
     await this.unpauseEpisode();
 
     success("Started episode!");
+  }
+
+  public async startNextEpisode() {
+    if (!process.env.SHERA_EPISODE_DIR)
+      throw new Error("Missing SHERA_EPISODE_DIR environment variable");
+    info("Playing next episode");)
+
+    const eps = await fs.readdir(process.env.SHERA_EPISODE_DIR);
+    if (eps.length === 0) throw new Error("SHERA_EPISODE_DIR is empty");
+    eps.sort();
+
+    let ep;
+    if (this.lastPlayedEpisode) {
+      const lastIdx = eps.findIndex((item) => item === this.lastPlayedEpisode);
+      if (lastIdx === -1)
+        throw new Error("Last played episode is not in directory");
+      if (lastIdx === eps.length - 1) return null; /* no more eps */
+      ep = eps[lastIdx + 1];
+    } else {
+      ep = eps[0];
+    }
+    this.lastPlayedEpisode = ep;
+    ep = joinPath(process.env.SHERA_EPISODE_DIR, ep);
+
+    await this.startEpisode(ep);
+
+    return ep;
   }
 
   public async pauseEpisode() {
