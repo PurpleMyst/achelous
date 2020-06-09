@@ -12,6 +12,7 @@ async function nextep(controller: OBSController, message: Message) {
     message.channel.send("That was the last one!");
   }
 }
+
 async function pause(controller: OBSController, message: Message) {
   message.channel.send("Pausing episode");
   await controller.pauseEpisode();
