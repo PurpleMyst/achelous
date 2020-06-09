@@ -24,5 +24,5 @@ async function unpause(controller: OBSController, message: Message) {
 
 export default { nextep, pause, unpause } as Record<
   string,
-  (controller: OBSController, message: Message) => Promise<void>
+  ((controller: OBSController, message: Message) => Promise<void>) | undefined
 >;
