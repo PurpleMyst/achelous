@@ -1,7 +1,7 @@
 {
-  "name": "sheraton",
+  "name": "achelous",
   "version": "0.1.0",
-  "description": "She-Ra Marathon OBS Websocket",
+  "description": "Discord bot that handles streaming marathons",
   "main": "src/main.js",
   "scripts": {
     "start": "node --unhandled-rejections=strict dist/main.js",

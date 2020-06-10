@@ -12,12 +12,12 @@ async function main() {
 
   const controller = new OBSController();
   await controller.connect({
-    address: process.env.SHERA_ADDRESS,
-    password: process.env.SHERA_PASSWORD,
+    address: process.env.ACHELOUS_ADDRESS,
+    password: process.env.ACHELOUS_PASSWORD,
   });
 
   const bot = new Discord.Client();
-  await bot.login(process.env.SHERA_DISCORD_TOKEN);
+  await bot.login(process.env.ACHELOUS_DISCORD_TOKEN);
 
   bot.on("message", async function messageHandler(message) {
     if (message.author.bot) return;

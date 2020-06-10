@@ -102,12 +102,12 @@ export default class ObsController {
   }
 
   public async startNextEpisode(): Promise<string | null> {
-    if (!process.env.SHERA_EPISODE_DIR)
-      throw new Error("Missing SHERA_EPISODE_DIR environment variable");
+    if (!process.env.ACHELOUS_EPISODE_DIR)
+      throw new Error("Missing ACHELOUS_EPISODE_DIR environment variable");
     info("Playing next episode");
 
-    const eps = await fs.readdir(process.env.SHERA_EPISODE_DIR);
-    if (eps.length === 0) throw new Error("SHERA_EPISODE_DIR is empty");
+    const eps = await fs.readdir(process.env.ACHELOUS_EPISODE_DIR);
+    if (eps.length === 0) throw new Error("ACHELOUS_EPISODE_DIR is empty");
     eps.sort();
 
     let ep;
@@ -121,7 +121,7 @@ export default class ObsController {
       ep = eps[0];
     }
     this.lastPlayedEpisode = ep;
-    ep = joinPath(process.env.SHERA_EPISODE_DIR, ep);
+    ep = joinPath(process.env.ACHELOUS_EPISODE_DIR, ep);
 
     await this.startEpisode(ep);
 
