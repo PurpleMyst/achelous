@@ -59,3 +59,13 @@ Pause the currently running episode.
 ### unpause
 
 Unpause the currently running episode.
+
+### rewind <N>
+
+Rewind the currently running episode by N seconds.
+If no time is given, a default value will be chosen, which at the time of writing is 10 seconds.
+
+### fastforward <N>
+
+Fast-forward the currently running episode by N seconds.
+If no time is given, a default value will be chosen, which at the time of writing is 10 seconds.
