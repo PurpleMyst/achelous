@@ -5,7 +5,7 @@ import ObsWebSocket from "obs-websocket-js";
 
 import { info, makeSpinner, success } from "./output";
 
-enum SceneName {
+export enum SceneName {
   Blank = "Blank",
   Loading = "Loading",
   Episode = "Episode",
@@ -19,12 +19,21 @@ const PAUSE = !PLAY;
 
 const EPISODE_FILE = "episode.mkv";
 
-export default class ObsController {
+export class ObsController {
   private socket: ObsWebSocket;
   private lastPlayedEpisode: string | null = null;
 
   public constructor() {
     this.socket = new ObsWebSocket();
+  }
+
+  public async getScene(): Promise<SceneName> {
+    const { name: nameString } = await this.socket.send("GetCurrentScene");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const name: SceneName | undefined = (SceneName as any)[nameString];
+    if (name === undefined)
+      throw new Error(`Found unknown scene name "${nameString}"`);
+    return name;
   }
 
   private async setScene(scene: SceneName) {
@@ -50,8 +59,7 @@ export default class ObsController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.socket.on("MediaEnded" as any, async ({ sourceName }) => {
       if (sourceName !== SOURCE_NAME) return;
-      if ((await this.socket.send("GetCurrentScene")).name != SceneName.Episode)
-        return;
+      if ((await this.getScene()) != SceneName.Episode) return;
       info("Moving to discussion scene");
       await this.setScene(SceneName.Discussion);
     });

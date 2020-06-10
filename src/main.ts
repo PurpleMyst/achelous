@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import * as Discord from "discord.js";
 
-import OBSController from "./obscontroller";
+import { ObsController } from "./obscontroller";
 import commands from "./commands";
 import { info } from "./output";
 
@@ -10,7 +10,7 @@ const COMMAND_PREFIX = "$";
 async function main() {
   dotenv.config();
 
-  const controller = new OBSController();
+  const controller = new ObsController();
   await controller.connect({
     address: process.env.ACHELOUS_ADDRESS,
     password: process.env.ACHELOUS_PASSWORD,
