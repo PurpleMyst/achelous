@@ -22,7 +22,7 @@ async function main() {
   bot.on("message", async function messageHandler(message) {
     if (message.author.bot) return;
 
-    await message.channel.startTyping();
+    message.channel.startTyping();
     const command = message.content.split(" ")[0];
     if (command?.startsWith(COMMAND_PREFIX)) {
       const handler = commands[command.substr(COMMAND_PREFIX.length)];
