@@ -19,7 +19,7 @@ and then pressing `Open PowerShell window here`. If you're on **OSX**, may the g
 
 Now, you must run the command `npm install` to install the projects dependencies, then run the command `npm run build` to **compile the project**.
 
-It's probably the time to **[set up a discord bot](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)** if you haven't done so already and **[adding it to a server of your choice](https://discordjs.guide/preparations/adding-your-bot-to-servers.html)**
+It's probably the time to **[set up a discord bot](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)** if you haven't done so already and **[add it to a server of your choice](https://discordjs.guide/preparations/adding-your-bot-to-servers.html)**
 
 Now it's time to **set up the bot's parameters**.
 This is done by **creating a file named `.env` in the bot directory** and filling it in the following way, where text between `<>` represents placeholders.
