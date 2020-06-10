@@ -118,7 +118,7 @@ export class ObsController {
     if (eps.length === 0) throw new Error("ACHELOUS_EPISODE_DIR is empty");
     eps.sort();
 
-    let ep;
+    let ep: string;
     if (this.lastPlayedEpisode) {
       const lastIdx = eps.findIndex((item) => item === this.lastPlayedEpisode);
       if (lastIdx === -1)
@@ -153,6 +153,22 @@ export class ObsController {
     await this.socket.send("PlayPauseMedia" as any, {
       sourceName: SOURCE_NAME,
       playPause: PLAY,
+    });
+  }
+
+  /**
+   * Scrub the currently playing episode by N seconds
+   * You can both go forward and backward in time
+   * @param timestep How many seconds to fast forward/rewind
+   */
+  public async scrub(timestep: number): Promise<void> {
+    info(`Rewinding by ${timestep} seconds`);
+    await this.setScene(SceneName.Episode);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await this.socket.send("ScrubMedia" as any, {
+      sourceName: SOURCE_NAME,
+      // The time given to us is in seconds but `ScrubMedia` expects milliseconds
+      timeOffset: timestep * 1000,
     });
   }
 }
