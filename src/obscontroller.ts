@@ -31,7 +31,10 @@ export default class ObsController {
     await this.socket.send("SetCurrentScene", { "scene-name": scene });
   }
 
-  public async connect(options: { address?: string; password?: string }) {
+  public async connect(options: {
+    address?: string;
+    password?: string;
+  }): Promise<void> {
     info("Connecting ...");
     await this.socket.connect(options);
     await this.verifyScenes();
@@ -44,6 +47,7 @@ export default class ObsController {
 
   private async registerDiscussionScene() {
     info("Registering discussion scene changer");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.socket.on("MediaEnded" as any, async ({ sourceName }) => {
       if (sourceName !== SOURCE_NAME) return;
       if ((await this.socket.send("GetCurrentScene")).name != SceneName.Episode)
@@ -53,7 +57,7 @@ export default class ObsController {
     });
   }
 
-  public async disconnect() {
+  public async disconnect(): Promise<void> {
     info("Disconnecting ...");
     this.socket.disconnect();
   }
@@ -68,7 +72,7 @@ export default class ObsController {
     }
   }
 
-  public async startEpisode(episodePath: string) {
+  public async startEpisode(episodePath: string): Promise<void> {
     // Blank out the screen so that we can switch the episode file outg
     info("Putting up a loading screen");
     await this.setScene(SceneName.Loading);
@@ -82,7 +86,9 @@ export default class ObsController {
     try {
       try {
         await fs.unlink(EPISODE_FILE);
-      } catch (e) {}
+      } catch (e) {
+        /* nom */
+      }
       await fs.copyFile(episodePath, EPISODE_FILE);
     } finally {
       stopSpinner();
@@ -95,7 +101,7 @@ export default class ObsController {
     success("Started episode!");
   }
 
-  public async startNextEpisode() {
+  public async startNextEpisode(): Promise<string | null> {
     if (!process.env.SHERA_EPISODE_DIR)
       throw new Error("Missing SHERA_EPISODE_DIR environment variable");
     info("Playing next episode");
@@ -122,18 +128,20 @@ export default class ObsController {
     return ep;
   }
 
-  public async pauseEpisode() {
+  public async pauseEpisode(): Promise<void> {
     info("Pausing episode");
     await this.setScene(SceneName.Episode);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await this.socket.send("PlayPauseMedia" as any, {
       sourceName: SOURCE_NAME,
       playPause: PAUSE,
     });
   }
 
-  public async unpauseEpisode() {
+  public async unpauseEpisode(): Promise<void> {
     info("Unpausing episode");
     await this.setScene(SceneName.Episode);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await this.socket.send("PlayPauseMedia" as any, {
       sourceName: SOURCE_NAME,
       playPause: PLAY,

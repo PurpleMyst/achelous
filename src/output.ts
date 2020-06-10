@@ -1,15 +1,15 @@
 import chalk from "chalk";
 import { Spinner } from "cli-spinner";
 
-export function success(message: unknown) {
+export function success(message: unknown): void {
   console.info(`[${chalk.green("SUCC")}] ${message}`);
 }
 
-export function info(message: unknown) {
+export function info(message: unknown): void {
   console.info(`[${chalk.blue("INFO")}] ${message}`);
 }
 
-export function error(message: unknown) {
+export function error(message: unknown): void {
   console.error(`[${chalk.red("ERROR")}] ${message}`);
 }
 
